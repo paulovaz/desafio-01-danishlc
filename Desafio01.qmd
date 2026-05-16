@@ -22,29 +22,13 @@ format:
 
 # Exercício 1
 
-A base de dados `ModeloVigente_DadosCP62_2023.xlsx` contém valores médios, considerando o período de 2018 a 2020, para as seguintes variáveis:
+## Regressão Linear Múltipla - Eficiência Operacional (ANEEL)
 
-- **Custos Operacionais** (PMSO / Despesas com Pessoal, Materiais, Serviços e Outros – em R\$ 1.000,00)
-- **Rede de alta tensão** (Km)
-- **Rede subterrânea** (Km)
-- **Rede de distribuição aérea** (Km)
-- **Mercado ponderado** (MWh – Mercado Atendido em termos de potência)
-- **Consumidores totais** (unidades)
-- **Consumidor Hora Interrompido - CHI** (h – Tempo médio de consumidores sem energia)
-- **Perdas Não Técnicas - PNT** (MWh – Energia perdida considerando fraudes, gatos, etc.)
+##Nesta etapa, o nosso objetivo é avaliar se os Custos Operacionais (PMSO) das 52 distribuidoras de energia podem ser explicados pelas suas características operacionais (tamanho da rede, mercado, perdas, etc.).
 
-Essas variáveis estão disponíveis para **52 empresas brasileiras distribuidoras de energia elétrica**.
+##Buscamos o melhor modelo de Regressão Linear Múltipla, equilibrando a capacidade preditiva e a simplicidade interpretativa. Para isso, as variáveis de identificação das empresas (DMU e Código) serão desconsideradas da modelagem.
 
-A **Agência Nacional de Energia Elétrica (ANEEL)** está utilizando essas informações para calcular a eficiência operacional das empresas de distribuição para o ano de 2023 e para os próximos anos.
-
-## Objetivo do Desafio
-
-O objetivo deste desafio é **avaliar se os Custos Operacionais (PMSO) podem ser estimados a partir das demais variáveis**. Deseja-se estimar o **melhor modelo de regressão linear interpretável**, considerando:
-
-- A **relevância estatística** das variáveis,
-- A **capacidade preditiva** do modelo.
-
-Como fonte de referência, está disponível o código RMarkdown utilizado em sala de aula, baseado na base de dados “Boston housing”.
+### 1.1 Carga e Preparação dos Dados
 
 ```{r}
 ## Exercício 1: Regressão Linear Múltipla - Eficiência Operacional (ANEEL)
@@ -140,31 +124,7 @@ Por outro lado, variáveis como "Rede Subterrânea" e "CHI" provaram ser irrelev
 
 # Exercício 2
 
-Utilizando **R/RMarkdown**, ajuste um **modelo linear generalizado de Poisson** para a base de dados `danishlc.dat`.
-
-Esta base é composta pelo número de casos de câncer de pulmão em quatro cidades na Dinamarca entre os anos de 1968 e 1971.
-
-As informações disponíveis são:
-
-- Número de casos (**y**)\
-- Faixas etárias\
-- População por faixas etárias\
-- Cidade
-
-Procure caracterizar as **faixas etárias** e as **cidades** que apresentam as **maiores taxas da doença**.
-
-Faça uma **análise dos resultados em um relatório sucinto**. O relatório deve incluir:
-
-- Análise descritiva\
-- Ajuste do modelo\
-- Análise dos resíduos\
-- Principais conclusões
-
-## Entrega
-
-Elabore o seu relatório utilizando o **RMarkdown** e envie o documento em formato **Word (.docx)** ou **PDF** para avaliação pelo sistema **minha.ufmg**.
-
-## Questão 1: Carga, Preparação e Análise Descritiva dos Dados
+**2.1 Carga, Preparação e Análise Descritiva dos Dados:**
 
 ```{r preparacao-dados}
 #| message: false
@@ -213,6 +173,9 @@ ggplot(danishlc, aes(x = Age, y = Taxa, fill = City)) +
   ) +
   scale_fill_brewer(palette = "Set2")
 ```
+
+**2.2 Análise Descritiva:**
+A análise exploratória inicial da base de dados revela o comportamento da taxa de incidência de câncer de pulmão nas quatro cidades dinamarquesas observadas (Fredericia, Horsens, Kolding e Vejle). Através da estatística descritiva e da visualização gráfica, fica evidente que a taxa de incidência (casos por 1.000 habitantes) é assimetricamente maior na faixa etária mais avançada (maiores de 74 anos), mantendo esse padrão de alta independentemente da cidade analisada. Visualmente, as cidades de Kolding e Vejle já demonstram barras mais elevadas nas idades mais críticas.
 
 ```{r}
 #| message: false
@@ -265,6 +228,12 @@ cat("Graus de Liberdade:", graus_liberdade, "\n")
 cat("P-valor do Teste de Ajuste:", round(p_valor_ajuste, 4), "\n")
 ```
 
+**2.3 Ajuste do Modelo e Qualidade:**
+
+Para modelar as contagens de casos da doença, aplicamos a Regressão de Poisson com a função de ligação logarítmica. O passo fundamental neste ajuste foi a utilização do logaritmo da População (`offset = log(Pop)`). Na modelagem epidemiológica, o *offset* transforma a simples contagem bruta de casos em uma **taxa de incidência**, permitindo uma comparação justa entre cidades que possuem tamanhos populacionais diferentes.
+
+O modelo demonstrou um excelente ajuste aos dados empíricos. Ao calcular a *Deviance Residual* (14,484 para 12 graus de liberdade) e submetê-la ao teste de Qualidade de Ajuste (Qui-Quadrado), obtivemos um p-valor amplamente superior ao nível de significância de 0,05. Esse resultado nos leva a não rejeitar a hipótese nula de bom ajuste do modelo, o que atesta a ausência de superdispersão e confirma que a distribuição de Poisson foi a escolha metodológica correta.
+
 ```{r}
 #| message: false
 #| warning: false
@@ -280,11 +249,13 @@ plot(modelo_poisson)
 par(mfrow = c(1, 1))
 ```
 
+**2.4 Análise dos Resíduos:**
+
 A análise gráfica dos resíduos deviance confirma a adequação do modelo. O gráfico Residuals vs Fitted não apresenta funilamento (homocedasticidade respeitada), o que é corroborado pelo teste formal de qualidade de ajuste (Qui-quadrado) realizado anteriormente, que descartou a presença de superdispersão. Além disso, a ausência de pontos que extrapolem a Distância de Cook no gráfico Residuals vs Leverage indica que não há outliers influentes distorcendo as estimativas das taxas de incidência nas cidades.
 
-Texto Teórico (Cole no final do documento, encerrando o trabalho):
+**2.5 Principais Conclusões:**
 
-Principais Conclusões: Com base nas Razões de Taxas (RR - Rate Ratios) extraídas da exponenciação dos coeficientes do modelo, podemos caracterizar o perfil de incidência do câncer de pulmão da seguinte forma:
+Com base nas Razões de Taxas (RR - Rate Ratios) extraídas da exponenciação dos coeficientes do modelo, podemos caracterizar o perfil de incidência do câncer de pulmão da seguinte forma:
 
 Efeito da Idade: A idade é o fator de risco mais expressivo. Tomando a faixa de maiores de 74 anos como base, observa-se que as taxas de incidência caem drasticamente nas faixas mais jovens. Pacientes entre 40-54 anos, por exemplo, apresentam uma taxa de incidência cerca de 88% menor (RR = 0,11) quando comparados aos idosos (\>74 anos). A incidência cresce progressivamente conforme a idade avança.
 
