@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Lorrayne Silva">
+<meta name="author" content="Kammyla Landim">
+<meta name="author" content="Paulo Emílio Vaz">
+<meta name="dcterms.date" content="2026-05-11">
+
+<title>1º Desafio em Elementos de Aprendizado de Máquina</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Desafio01_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Desafio01_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Desafio01_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Desafio01_files/libs/quarto-html/popper.min.js"></script>
+<script src="Desafio01_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Desafio01_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Desafio01_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Desafio01_files/libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Desafio01_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Desafio01_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Desafio01_files/libs/bootstrap/bootstrap-67270d1595a62d14f123c043d4fb2f18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#exercício-1" id="toc-exercício-1" class="nav-link active" data-scroll-target="#exercício-1"><span class="header-section-number">1</span> Exercício 1</a>
+  <ul class="collapse">
+  <li><a href="#objetivo-do-desafio" id="toc-objetivo-do-desafio" class="nav-link" data-scroll-target="#objetivo-do-desafio"><span class="header-section-number">1.1</span> Objetivo do Desafio</a></li>
+  </ul></li>
+  <li><a href="#exercício-2" id="toc-exercício-2" class="nav-link" data-scroll-target="#exercício-2"><span class="header-section-number">2</span> Exercício 2</a>
+  <ul class="collapse">
+  <li><a href="#entrega" id="toc-entrega" class="nav-link" data-scroll-target="#entrega"><span class="header-section-number">2.1</span> Entrega</a></li>
+  <li><a href="#questão-1-carga-preparação-e-análise-descritiva-dos-dados" id="toc-questão-1-carga-preparação-e-análise-descritiva-dos-dados" class="nav-link" data-scroll-target="#questão-1-carga-preparação-e-análise-descritiva-dos-dados"><span class="header-section-number">2.2</span> Questão 1: Carga, Preparação e Análise Descritiva dos Dados</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Desafio01.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">1º Desafio em Elementos de Aprendizado de Máquina</h1>
+<p class="subtitle lead">Exercício 1 - ANEEL e Exercício 2 - Dataset Danish Lung Cancer</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lorrayne Silva </p>
+             <p>Kammyla Landim </p>
+             <p>Paulo Emílio Vaz </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 11, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="exercício-1" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Exercício 1</h1>
+<p>A base de dados <code>ModeloVigente_DadosCP62_2023.xlsx</code> contém valores médios, considerando o período de 2018 a 2020, para as seguintes variáveis:</p>
+<ul>
+<li><strong>Custos Operacionais</strong> (PMSO / Despesas com Pessoal, Materiais, Serviços e Outros – em R$ 1.000,00)</li>
+<li><strong>Rede de alta tensão</strong> (Km)</li>
+<li><strong>Rede subterrânea</strong> (Km)</li>
+<li><strong>Rede de distribuição aérea</strong> (Km)</li>
+<li><strong>Mercado ponderado</strong> (MWh – Mercado Atendido em termos de potência)</li>
+<li><strong>Consumidores totais</strong> (unidades)</li>
+<li><strong>Consumidor Hora Interrompido - CHI</strong> (h – Tempo médio de consumidores sem energia)</li>
+<li><strong>Perdas Não Técnicas - PNT</strong> (MWh – Energia perdida considerando fraudes, gatos, etc.)</li>
+</ul>
+<p>Essas variáveis estão disponíveis para <strong>52 empresas brasileiras distribuidoras de energia elétrica</strong>.</p>
+<p>A <strong>Agência Nacional de Energia Elétrica (ANEEL)</strong> está utilizando essas informações para calcular a eficiência operacional das empresas de distribuição para o ano de 2023 e para os próximos anos.</p>
+<section id="objetivo-do-desafio" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="objetivo-do-desafio"><span class="header-section-number">1.1</span> Objetivo do Desafio</h2>
+<p>O objetivo deste desafio é <strong>avaliar se os Custos Operacionais (PMSO) podem ser estimados a partir das demais variáveis</strong>. Deseja-se estimar o <strong>melhor modelo de regressão linear interpretável</strong>, considerando:</p>
+<ul>
+<li>A <strong>relevância estatística</strong> das variáveis,</li>
+<li>A <strong>capacidade preditiva</strong> do modelo.</li>
+</ul>
+<p>Como fonte de referência, está disponível o código RMarkdown utilizado em sala de aula, baseado na base de dados “Boston housing”.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Exercício 1: Regressão Linear Múltipla - Eficiência Operacional (ANEEL)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">##Nesta etapa, o nosso objetivo é avaliar se os Custos Operacionais (PMSO) das 52 distribuidoras de energia podem ser explicados pelas suas características operacionais (tamanho da rede, mercado, perdas, etc.). </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">##Buscamos o melhor modelo de Regressão Linear Múltipla, equilibrando a capacidade preditiva e a simplicidade interpretativa. Para isso, as variáveis de identificação das empresas (DMU e Código) serão desconsideradas da modelagem.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">### 1.1 Carga e Preparação dos Dados</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregando o pacote para leitura de planilhas</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lendo a base de dados</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dados_aneel <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"ModeloVigente_DadosCP62_2023.xlsx"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando a estrutura inicial dos dados</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dados_aneel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  DMU         Codigo   PMSO `rede alta` `rede subterranea` `rede aerea` mercadoP
+  &lt;chr&gt;       &lt;chr&gt;   &lt;dbl&gt;       &lt;dbl&gt;              &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;
+1 RGE SUL (F… D01f   8.73e5       4316.            73.3         152713. 8369799.
+2 AMAZONAS    D02    8.11e5        251.            36.7          35968. 2758709.
+3 ENEL RJ     D03    7.80e5       3666.          3284.           54738. 5618601.
+4 BANDEIRANTE D04    4.74e5       1034.           220.           28193. 5300379.
+5 BOA VISTA … D05    1.62e5        713.             0.0500       16307.  642847.
+6 ESS (FUSAO… D06f   2.26e5        504.          1051.           30826. 2286742.
+# ℹ 3 more variables: cons &lt;dbl&gt;, CHI &lt;dbl&gt;, PNT &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p><strong>1.2. Ajuste do Modelo Completo (Regressão Linear Múltipla):</strong> Nós iniciamos aplicando a Regressão Linear Múltipla clássica inserindo todas as variáveis explicativas disponíveis (excluindo apenas os identificadores textuais, como já discutimos). O objetivo foi criar uma “linha de base” para entender como todas as forças atuavam juntas sobre o Custo Operacional (PMSO).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo completo (Prevendo PMSO e ignorando DMU e Codigo)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>modelo_completo <span class="ot">&lt;-</span> <span class="fu">lm</span>(PMSO <span class="sc">~</span> . <span class="sc">-</span> DMU <span class="sc">-</span> Codigo, <span class="at">data =</span> dados_aneel)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando os resultados do modelo completo</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_completo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = PMSO ~ . - DMU - Codigo, data = dados_aneel)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-195964  -27080  -17861   30823  224701 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         2.171e+04  1.569e+04   1.384  0.17334    
+`rede alta`        -3.937e+01  1.651e+01  -2.384  0.02148 *  
+`rede subterranea`  2.147e+01  1.997e+01   1.075  0.28824    
+`rede aerea`        2.896e+00  5.632e-01   5.142 6.02e-06 ***
+mercadoP            3.662e-02  1.069e-02   3.426  0.00134 ** 
+cons                9.304e-02  3.397e-02   2.739  0.00886 ** 
+CHI                 3.484e-04  1.780e-03   0.196  0.84572    
+PNT                 1.914e-01  3.543e-02   5.403 2.52e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 82120 on 44 degrees of freedom
+Multiple R-squared:  0.9798,    Adjusted R-squared:  0.9766 
+F-statistic: 304.9 on 7 and 44 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p><strong>1.3. Análise da Relevância Estatística (Modelo Completo):</strong> No caso do CHI e da Rede Subterrânea, o p-valor ficou muito acima do nível de significância de 0,05 (0,84 e 0,28, respectivamente). Isso significa que a probabilidade de estarmos observando essa relação apenas por acaso (ruído dos dados) é alta demais. Como o nível de dúvida superou nosso limite de segurança, falhamos em rejeitar a hipótese nula. Portanto, concluímos que não há evidências estatísticas de que essas variáveis impactem os custos operacionais e decidimos excluí-las para manter o modelo parcimonioso e confiável.</p>
+<p>No sumário acima, é possível identificar que as outras variáveis passam no teste de significância, sendo que a PNT e a Rede Aérea são as que apresentam o maior grau de significância estatística (p &lt; 0,001, indicados pelos códigos visuais <code>***</code>).</p>
+<p>No bloco seguinte, removemos manualmente as variáveis não significativas e validamos essa escolha através do teste de diferença de Deviance (ANOVA), conforme a metodologia apresentada na Aula 03 (Slide 3).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo reduzido (removendo 'rede subterranea' e 'CHI')</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>modelo_reduzido <span class="ot">&lt;-</span> <span class="fu">lm</span>(PMSO <span class="sc">~</span> <span class="st">`</span><span class="at">rede alta</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">rede aerea</span><span class="st">`</span> <span class="sc">+</span> mercadoP <span class="sc">+</span> cons <span class="sc">+</span> PNT, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> dados_aneel)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Resumo do modelo reduzido</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_reduzido)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = PMSO ~ `rede alta` + `rede aerea` + mercadoP + cons + 
+    PNT, data = dados_aneel)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-194771  -26642  -17927   29080  219176 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   2.197e+04  1.510e+04   1.455  0.15247    
+`rede alta`  -3.809e+01  1.604e+01  -2.374  0.02180 *  
+`rede aerea`  2.761e+00  5.200e-01   5.310 3.09e-06 ***
+mercadoP      3.431e-02  1.033e-02   3.321  0.00176 ** 
+cons          1.076e-01  3.081e-02   3.491  0.00107 ** 
+PNT           2.025e-01  3.290e-02   6.155 1.69e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 81380 on 46 degrees of freedom
+Multiple R-squared:  0.9793,    Adjusted R-squared:  0.977 
+F-statistic: 434.3 on 5 and 46 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparação de Desvios (Deviance / ANOVA)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(modelo_reduzido, modelo_completo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: PMSO ~ `rede alta` + `rede aerea` + mercadoP + cons + PNT
+Model 2: PMSO ~ (DMU + Codigo + `rede alta` + `rede subterranea` + `rede aerea` + 
+    mercadoP + cons + CHI + PNT) - DMU - Codigo
+  Res.Df        RSS Df  Sum of Sq      F Pr(&gt;F)
+1     46 3.0467e+11                            
+2     44 2.9670e+11  2 7972199165 0.5911  0.558</code></pre>
+</div>
+</div>
+<p><strong>1.4 Seleção de Variáveis e Capacidade Preditiva:</strong></p>
+<p>Para obter o novo modelo acima, removemos manualmente as variáveis não significativas. Para validar essa remoção, aplicamos o teste de Análise de Variância (ANOVA), que avalia a diferença de desvios (Deviance) entre os dois modelos.</p>
+<p>O teste ANOVA retornou um valor-p alto (p &gt; 0.05), o que indica que a remoção das variáveis “Rede Subterrânea” e “CHI” não causou uma perda significativa de qualidade no ajuste. Como o p-valor do modelo ficou em 0,558 não rejeitamos a hipótese nula (os dois modelos são iguais em capacidade de explicação , ou seja as variáveis que retiramos não fazem falta).</p>
+<p>O <code>modelo_reduzido</code> final atende aos objetivos do desafio:</p>
+<ol type="1">
+<li><p><strong>Relevância:</strong> Todas as variáveis mantidas (Rede de alta tensão, Rede aérea, Mercado, Consumidores e PNT) são altamente significativas (p &lt; 0.05).</p></li>
+<li><p><strong>Capacidade Preditiva:</strong> O modelo reteve um <span class="math inline">\(R^2\)</span> Ajustado de 0.977, demonstrando que 97,7% da variação nos custos (PMSO) é perfeitamente explicada por este conjunto reduzido de variáveis operacionais.</p></li>
+</ol>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando os gráficos de diagnóstico para o modelo escolhido</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_reduzido)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Desafio01_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retornando a área de plotagem ao padrão original</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<pre><code>1.5 Principais Conclusões (Exercício 1):
+A partir do modelo reduzido selecionado, concluímos que é perfeitamente viável para a ANEEL estimar os Custos Operacionais (PMSO) utilizando os dados técnicos e de mercado das concessionárias. O modelo revelou que 97,7% da variação desses custos é explicada por apenas cinco variáveis-chave: Rede de alta tensão, Rede aérea, Mercado ponderado, Consumidores e Perdas Não Técnicas (PNT).  
+
+Por outro lado, variáveis como "Rede Subterrânea" e "CHI" provaram ser irrelevantes para a formação do custo operacional neste conjunto de dados estatísticos. Esta descoberta é de alto valor para a ANEEL, pois permite à agência focar seus esforços de regulação, auditoria e previsão estritamente nas métricas que possuem impacto financeiro matematicamente comprovado.</code></pre>
+</section>
+</section>
+<section id="exercício-2" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Exercício 2</h1>
+<p>Utilizando <strong>R/RMarkdown</strong>, ajuste um <strong>modelo linear generalizado de Poisson</strong> para a base de dados <code>danishlc.dat</code>.</p>
+<p>Esta base é composta pelo número de casos de câncer de pulmão em quatro cidades na Dinamarca entre os anos de 1968 e 1971.</p>
+<p>As informações disponíveis são:</p>
+<ul>
+<li>Número de casos (<strong>y</strong>)<br>
+</li>
+<li>Faixas etárias<br>
+</li>
+<li>População por faixas etárias<br>
+</li>
+<li>Cidade</li>
+</ul>
+<p>Procure caracterizar as <strong>faixas etárias</strong> e as <strong>cidades</strong> que apresentam as <strong>maiores taxas da doença</strong>.</p>
+<p>Faça uma <strong>análise dos resultados em um relatório sucinto</strong>. O relatório deve incluir:</p>
+<ul>
+<li>Análise descritiva<br>
+</li>
+<li>Ajuste do modelo<br>
+</li>
+<li>Análise dos resíduos<br>
+</li>
+<li>Principais conclusões</li>
+</ul>
+<section id="entrega" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="entrega"><span class="header-section-number">2.1</span> Entrega</h2>
+<p>Elabore o seu relatório utilizando o <strong>RMarkdown</strong> e envie o documento em formato <strong>Word (.docx)</strong> ou <strong>PDF</strong> para avaliação pelo sistema <strong>minha.ufmg</strong>.</p>
+</section>
+<section id="questão-1-carga-preparação-e-análise-descritiva-dos-dados" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="questão-1-carga-preparação-e-análise-descritiva-dos-dados"><span class="header-section-number">2.2</span> Questão 1: Carga, Preparação e Análise Descritiva dos Dados</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criando o data frame com os dados do desafio</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>danishlc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">City =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Fredericia"</span>, <span class="st">"Horsens"</span>, <span class="st">"Kolding"</span>, <span class="st">"Vejle"</span>), <span class="at">each =</span> <span class="dv">5</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"40-54"</span>, <span class="st">"55-59"</span>, <span class="st">"60-64"</span>, <span class="st">"65-74"</span>, <span class="st">"&gt;74"</span>), <span class="at">times =</span> <span class="dv">4</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Pop =</span> <span class="fu">c</span>(<span class="dv">3059</span>, <span class="dv">800</span>, <span class="dv">710</span>, <span class="dv">581</span>, <span class="dv">509</span>,  </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>          <span class="dv">3083</span>, <span class="dv">712</span>, <span class="dv">625</span>, <span class="dv">402</span>, <span class="dv">290</span>,  </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>          <span class="dv">2867</span>, <span class="dv">597</span>, <span class="dv">526</span>, <span class="dv">350</span>, <span class="dv">223</span>,  </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>          <span class="dv">2914</span>, <span class="dv">539</span>, <span class="dv">461</span>, <span class="dv">307</span>, <span class="dv">189</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cases =</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">10</span>, <span class="dv">11</span>,  </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            <span class="dv">15</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">4</span>,  </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            <span class="dv">11</span>, <span class="dv">13</span>, <span class="dv">9</span>, <span class="dv">11</span>, <span class="dv">10</span>,  </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="dv">10</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">14</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertendo as variáveis explicativas para fatores</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>City <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(danishlc<span class="sc">$</span>City)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>Age <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(danishlc<span class="sc">$</span>Age)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculando a Taxa Bruta de Incidência (por 1.000 habitantes)</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>Taxa <span class="ot">&lt;-</span> (danishlc<span class="sc">$</span>Cases <span class="sc">/</span> danishlc<span class="sc">$</span>Pop) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando o sumário descritivo dos dados</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(danishlc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         City      Age         Pop             Cases            Taxa       
+ Fredericia:5   &gt;74  :4   Min.   : 189.0   Min.   : 4.00   Min.   : 3.432  
+ Horsens   :5   40-54:4   1st Qu.: 389.0   1st Qu.: 8.00   1st Qu.:11.707  
+ Kolding   :5   55-59:4   Median : 560.0   Median :10.00   Median :15.339  
+ Vejle     :5   60-64:4   Mean   : 987.2   Mean   : 9.85   Mean   :19.403  
+                65-74:4   3rd Qu.: 734.0   3rd Qu.:11.00   3rd Qu.:21.652  
+                          Max.   :3083.0   Max.   :15.00   Max.   :74.074  </code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(danishlc, <span class="fu">aes</span>(<span class="at">x =</span> Age, <span class="at">y =</span> Taxa, <span class="at">fill =</span> City)) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Taxa de Incidência de Câncer de Pulmão por 1.000 Habitantes"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Faixa Etária (Anos)"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Casos por 1.000 Habitantes"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Cidade"</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Desafio01_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo de Poisson com offset populacional</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>modelo_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  Cases <span class="sc">~</span> City <span class="sc">+</span> Age, </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>), </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> <span class="fu">log</span>(Pop), </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> danishlc</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Exibindo os resultados detalhados do modelo</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_poisson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Cases ~ City + Age, family = poisson(link = "log"), 
+    data = danishlc, offset = log(Pop))
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -3.57882    0.19004 -18.832  &lt; 2e-16 ***
+CityHorsens -0.05664    0.20918  -0.271 0.786564    
+CityKolding  0.40221    0.19339   2.080 0.037543 *  
+CityVejle    0.39649    0.19865   1.996 0.045945 *  
+Age40-54    -2.15918    0.21821  -9.895  &lt; 2e-16 ***
+Age55-59    -0.84403    0.22867  -3.691 0.000223 ***
+Age60-64    -0.79328    0.23350  -3.397 0.000680 ***
+Age65-74    -0.35432    0.22821  -1.553 0.120509    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 147.943  on 19  degrees of freedom
+Residual deviance:  14.484  on 12  degrees of freedom
+AIC: 112.55
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<pre><code>#| message: false
+#| warning: false
+
+# Extraindo as razões de taxas (exponencial dos coeficientes)
+razao_taxas &lt;- exp(coef(modelo_poisson))
+
+# Calculando os Intervalos de Confiança (95%)
+ic_razao_taxas &lt;- exp(confint(modelo_poisson))
+
+# Consolidando os resultados em uma tabela
+tabela_interpretacao &lt;- cbind(
+  `Razão de Taxas (RR)` = razao_taxas, 
+  ic_razao_taxas
+)
+
+print(round(tabela_interpretacao, 4))}</code></pre>
+<pre><code>#| message: false
+#| warning: false
+
+# Extraindo estatísticas de ajuste
+deviance_residual &lt;- modelo_poisson$deviance
+graus_liberdade &lt;- modelo_poisson$df.residual
+
+# Calculando o p-valor do teste Qui-Quadrado
+p_valor_ajuste &lt;- pchisq(deviance_residual, df = graus_liberdade, lower.tail = FALSE)
+
+cat("Deviance Residual:", round(deviance_residual, 4), "\n")
+cat("Graus de Liberdade:", graus_liberdade, "\n")
+cat("P-valor do Teste de Ajuste:", round(p_valor_ajuste, 4), "\n")</code></pre>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando os gráficos de diagnóstico para o modelo de Poisson</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_poisson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Desafio01_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retornando a área de plotagem ao padrão original</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>A análise gráfica dos resíduos deviance confirma a adequação do modelo. O gráfico Residuals vs Fitted não apresenta funilamento (homocedasticidade respeitada), o que é corroborado pelo teste formal de qualidade de ajuste (Qui-quadrado) realizado anteriormente, que descartou a presença de superdispersão. Além disso, a ausência de pontos que extrapolem a Distância de Cook no gráfico Residuals vs Leverage indica que não há outliers influentes distorcendo as estimativas das taxas de incidência nas cidades.</p>
+<p>Texto Teórico (Cole no final do documento, encerrando o trabalho):</p>
+<p>Principais Conclusões: Com base nas Razões de Taxas (RR - Rate Ratios) extraídas da exponenciação dos coeficientes do modelo, podemos caracterizar o perfil de incidência do câncer de pulmão da seguinte forma:</p>
+<p>Efeito da Idade: A idade é o fator de risco mais expressivo. Tomando a faixa de maiores de 74 anos como base, observa-se que as taxas de incidência caem drasticamente nas faixas mais jovens. Pacientes entre 40-54 anos, por exemplo, apresentam uma taxa de incidência cerca de 88% menor (RR = 0,11) quando comparados aos idosos (&gt;74 anos). A incidência cresce progressivamente conforme a idade avança.</p>
+<p>Efeito da Localidade (Cidades): Tendo a cidade de Fredericia como referência (linha de base do modelo), notamos que a cidade de Horsens não apresenta diferença estatística significativa nas taxas (p &gt; 0,05). No entanto, as cidades de Kolding e Vejle apresentam as maiores taxas da doença, com incidências aproximadamente 49% e 48% maiores (RR = 1,49 e RR = 1,48, respectivamente) do que Fredericia, mantendo-se a faixa etária constante.</p>
+<p>Conclusão Geral: O modelo confirmou que o risco de câncer de pulmão nas cidades dinamarquesas analisadas aumenta severamente com o envelhecimento da população, e que existe uma concentração geográfica de maior risco (maiores taxas) nas cidades de Kolding e Vejle.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

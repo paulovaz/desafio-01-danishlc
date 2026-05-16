@@ -1,0 +1,295 @@
+---
+title: "1º Desafio em Elementos de Aprendizado de Máquina"
+subtitle: "Exercício 1 - ANEEL e Exercício 2 - Dataset Danish Lung Cancer"
+author:
+  - Lorrayne Silva
+  - Kammyla Landim
+  - Paulo Emílio Vaz
+date: "2026-05-11"
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    colorlinks: true
+    toc: true
+    number-sections: true
+  html:
+    theme: cosmo
+    toc: true
+    number-sections: true
+    code-fold: true
+---
+
+# Exercício 1
+
+A base de dados `ModeloVigente_DadosCP62_2023.xlsx` contém valores médios, considerando o período de 2018 a 2020, para as seguintes variáveis:
+
+- **Custos Operacionais** (PMSO / Despesas com Pessoal, Materiais, Serviços e Outros – em R\$ 1.000,00)
+- **Rede de alta tensão** (Km)
+- **Rede subterrânea** (Km)
+- **Rede de distribuição aérea** (Km)
+- **Mercado ponderado** (MWh – Mercado Atendido em termos de potência)
+- **Consumidores totais** (unidades)
+- **Consumidor Hora Interrompido - CHI** (h – Tempo médio de consumidores sem energia)
+- **Perdas Não Técnicas - PNT** (MWh – Energia perdida considerando fraudes, gatos, etc.)
+
+Essas variáveis estão disponíveis para **52 empresas brasileiras distribuidoras de energia elétrica**.
+
+A **Agência Nacional de Energia Elétrica (ANEEL)** está utilizando essas informações para calcular a eficiência operacional das empresas de distribuição para o ano de 2023 e para os próximos anos.
+
+## Objetivo do Desafio
+
+O objetivo deste desafio é **avaliar se os Custos Operacionais (PMSO) podem ser estimados a partir das demais variáveis**. Deseja-se estimar o **melhor modelo de regressão linear interpretável**, considerando:
+
+- A **relevância estatística** das variáveis,
+- A **capacidade preditiva** do modelo.
+
+Como fonte de referência, está disponível o código RMarkdown utilizado em sala de aula, baseado na base de dados “Boston housing”.
+
+```{r}
+## Exercício 1: Regressão Linear Múltipla - Eficiência Operacional (ANEEL)
+
+##Nesta etapa, o nosso objetivo é avaliar se os Custos Operacionais (PMSO) das 52 distribuidoras de energia podem ser explicados pelas suas características operacionais (tamanho da rede, mercado, perdas, etc.). 
+
+##Buscamos o melhor modelo de Regressão Linear Múltipla, equilibrando a capacidade preditiva e a simplicidade interpretativa. Para isso, as variáveis de identificação das empresas (DMU e Código) serão desconsideradas da modelagem.
+
+### 1.1 Carga e Preparação dos Dados
+
+```
+
+```{r}
+#| message: false
+#| warning: false
+
+# Carregando o pacote para leitura de planilhas
+library(readxl)
+
+# Lendo a base de dados
+dados_aneel <- read_excel("ModeloVigente_DadosCP62_2023.xlsx")
+
+# Visualizando a estrutura inicial dos dados
+head(dados_aneel)
+```
+
+**1.2. Ajuste do Modelo Completo (Regressão Linear Múltipla):** Nós iniciamos aplicando a Regressão Linear Múltipla clássica inserindo todas as variáveis explicativas disponíveis (excluindo apenas os identificadores textuais, como já discutimos). O objetivo foi criar uma "linha de base" para entender como todas as forças atuavam juntas sobre o Custo Operacional (PMSO).
+
+```{r}
+#| message: false
+#| warning: false
+
+# Ajustando o modelo completo (Prevendo PMSO e ignorando DMU e Codigo)
+modelo_completo <- lm(PMSO ~ . - DMU - Codigo, data = dados_aneel)
+
+# Visualizando os resultados do modelo completo
+summary(modelo_completo)
+```
+
+**1.3. Análise da Relevância Estatística (Modelo Completo):** No caso do CHI e da Rede Subterrânea, o p-valor ficou muito acima do nível de significância de 0,05 (0,84 e 0,28, respectivamente). Isso significa que a probabilidade de estarmos observando essa relação apenas por acaso (ruído dos dados) é alta demais. Como o nível de dúvida superou nosso limite de segurança, falhamos em rejeitar a hipótese nula. Portanto, concluímos que não há evidências estatísticas de que essas variáveis impactem os custos operacionais e decidimos excluí-las para manter o modelo parcimonioso e confiável.
+
+No sumário acima, é possível identificar que as outras variáveis passam no teste de significância, sendo que a PNT e a Rede Aérea são as que apresentam o maior grau de significância estatística (p \< 0,001, indicados pelos códigos visuais `***`).
+
+No bloco seguinte, removemos manualmente as variáveis não significativas e validamos essa escolha através do teste de diferença de Deviance (ANOVA), conforme a metodologia apresentada na Aula 03 (Slide 3).
+
+```{r}
+#| message: false
+#| warning: false
+
+# Ajustando o modelo reduzido (removendo 'rede subterranea' e 'CHI')
+modelo_reduzido <- lm(PMSO ~ `rede alta` + `rede aerea` + mercadoP + cons + PNT, 
+                      data = dados_aneel)
+
+# Resumo do modelo reduzido
+summary(modelo_reduzido)
+
+# Comparação de Desvios (Deviance / ANOVA)
+anova(modelo_reduzido, modelo_completo)
+```
+
+**1.4 Seleção de Variáveis e Capacidade Preditiva:**
+
+Para obter o novo modelo acima, removemos manualmente as variáveis não significativas. Para validar essa remoção, aplicamos o teste de Análise de Variância (ANOVA), que avalia a diferença de desvios (Deviance) entre os dois modelos.
+
+O teste ANOVA retornou um valor-p alto (p \> 0.05), o que indica que a remoção das variáveis "Rede Subterrânea" e "CHI" não causou uma perda significativa de qualidade no ajuste. Como o p-valor do modelo ficou em 0,558 não rejeitamos a hipótese nula (os dois modelos são iguais em capacidade de explicação , ou seja as variáveis que retiramos não fazem falta).
+
+O `modelo_reduzido` final atende aos objetivos do desafio:
+
+1.  **Relevância:** Todas as variáveis mantidas (Rede de alta tensão, Rede aérea, Mercado, Consumidores e PNT) são altamente significativas (p \< 0.05).
+
+2.  **Capacidade Preditiva:** O modelo reteve um $R^2$ Ajustado de 0.977, demonstrando que 97,7% da variação nos custos (PMSO) é perfeitamente explicada por este conjunto reduzido de variáveis operacionais.
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-align: "center"
+
+# Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente
+par(mfrow = c(2, 2))
+
+# Plotando os gráficos de diagnóstico para o modelo escolhido
+plot(modelo_reduzido)
+
+# Retornando a área de plotagem ao padrão original
+par(mfrow = c(1, 1))
+```
+
+```         
+1.5 Principais Conclusões (Exercício 1):
+A partir do modelo reduzido selecionado, concluímos que é perfeitamente viável para a ANEEL estimar os Custos Operacionais (PMSO) utilizando os dados técnicos e de mercado das concessionárias. O modelo revelou que 97,7% da variação desses custos é explicada por apenas cinco variáveis-chave: Rede de alta tensão, Rede aérea, Mercado ponderado, Consumidores e Perdas Não Técnicas (PNT).  
+
+Por outro lado, variáveis como "Rede Subterrânea" e "CHI" provaram ser irrelevantes para a formação do custo operacional neste conjunto de dados estatísticos. Esta descoberta é de alto valor para a ANEEL, pois permite à agência focar seus esforços de regulação, auditoria e previsão estritamente nas métricas que possuem impacto financeiro matematicamente comprovado.
+```
+
+# Exercício 2
+
+Utilizando **R/RMarkdown**, ajuste um **modelo linear generalizado de Poisson** para a base de dados `danishlc.dat`.
+
+Esta base é composta pelo número de casos de câncer de pulmão em quatro cidades na Dinamarca entre os anos de 1968 e 1971.
+
+As informações disponíveis são:
+
+- Número de casos (**y**)\
+- Faixas etárias\
+- População por faixas etárias\
+- Cidade
+
+Procure caracterizar as **faixas etárias** e as **cidades** que apresentam as **maiores taxas da doença**.
+
+Faça uma **análise dos resultados em um relatório sucinto**. O relatório deve incluir:
+
+- Análise descritiva\
+- Ajuste do modelo\
+- Análise dos resíduos\
+- Principais conclusões
+
+## Entrega
+
+Elabore o seu relatório utilizando o **RMarkdown** e envie o documento em formato **Word (.docx)** ou **PDF** para avaliação pelo sistema **minha.ufmg**.
+
+## Questão 1: Carga, Preparação e Análise Descritiva dos Dados
+
+```{r preparacao-dados}
+#| message: false
+#| warning: false
+
+# Criando o data frame com os dados do desafio
+danishlc <- data.frame(
+  City = rep(c("Fredericia", "Horsens", "Kolding", "Vejle"), each = 5),
+  Age = rep(c("40-54", "55-59", "60-64", "65-74", ">74"), times = 4),
+  Pop = c(3059, 800, 710, 581, 509,  
+          3083, 712, 625, 402, 290,  
+          2867, 597, 526, 350, 223,  
+          2914, 539, 461, 307, 189),
+  Cases = c(11, 11, 11, 10, 11,  
+            15, 6, 8, 7, 4,  
+            11, 13, 9, 11, 10,  
+            10, 8, 7, 10, 14)
+)
+
+# Convertendo as variáveis explicativas para fatores
+danishlc$City <- as.factor(danishlc$City)
+danishlc$Age <- as.factor(danishlc$Age)
+
+# Calculando a Taxa Bruta de Incidência (por 1.000 habitantes)
+danishlc$Taxa <- (danishlc$Cases / danishlc$Pop) * 1000
+
+# Visualizando o sumário descritivo dos dados
+summary(danishlc)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-align: "center"
+
+library(ggplot2)
+
+ggplot(danishlc, aes(x = Age, y = Taxa, fill = City)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(
+    title = "Taxa de Incidência de Câncer de Pulmão por 1.000 Habitantes",
+    x = "Faixa Etária (Anos)",
+    y = "Casos por 1.000 Habitantes",
+    fill = "Cidade"
+  ) +
+  scale_fill_brewer(palette = "Set2")
+```
+
+```{r}
+#| message: false
+#| warning: false
+
+# Ajustando o modelo de Poisson com offset populacional
+modelo_poisson <- glm(
+  Cases ~ City + Age, 
+  family = poisson(link = "log"), 
+  offset = log(Pop), 
+  data = danishlc
+)
+
+# Exibindo os resultados detalhados do modelo
+summary(modelo_poisson)
+```
+
+```         
+#| message: false
+#| warning: false
+
+# Extraindo as razões de taxas (exponencial dos coeficientes)
+razao_taxas <- exp(coef(modelo_poisson))
+
+# Calculando os Intervalos de Confiança (95%)
+ic_razao_taxas <- exp(confint(modelo_poisson))
+
+# Consolidando os resultados em uma tabela
+tabela_interpretacao <- cbind(
+  `Razão de Taxas (RR)` = razao_taxas, 
+  ic_razao_taxas
+)
+
+print(round(tabela_interpretacao, 4))}
+```
+
+```         
+#| message: false
+#| warning: false
+
+# Extraindo estatísticas de ajuste
+deviance_residual <- modelo_poisson$deviance
+graus_liberdade <- modelo_poisson$df.residual
+
+# Calculando o p-valor do teste Qui-Quadrado
+p_valor_ajuste <- pchisq(deviance_residual, df = graus_liberdade, lower.tail = FALSE)
+
+cat("Deviance Residual:", round(deviance_residual, 4), "\n")
+cat("Graus de Liberdade:", graus_liberdade, "\n")
+cat("P-valor do Teste de Ajuste:", round(p_valor_ajuste, 4), "\n")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-align: "center"
+
+# Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente
+par(mfrow = c(2, 2))
+
+# Plotando os gráficos de diagnóstico para o modelo de Poisson
+plot(modelo_poisson)
+
+# Retornando a área de plotagem ao padrão original
+par(mfrow = c(1, 1))
+```
+
+A análise gráfica dos resíduos deviance confirma a adequação do modelo. O gráfico Residuals vs Fitted não apresenta funilamento (homocedasticidade respeitada), o que é corroborado pelo teste formal de qualidade de ajuste (Qui-quadrado) realizado anteriormente, que descartou a presença de superdispersão. Além disso, a ausência de pontos que extrapolem a Distância de Cook no gráfico Residuals vs Leverage indica que não há outliers influentes distorcendo as estimativas das taxas de incidência nas cidades.
+
+Texto Teórico (Cole no final do documento, encerrando o trabalho):
+
+Principais Conclusões: Com base nas Razões de Taxas (RR - Rate Ratios) extraídas da exponenciação dos coeficientes do modelo, podemos caracterizar o perfil de incidência do câncer de pulmão da seguinte forma:
+
+Efeito da Idade: A idade é o fator de risco mais expressivo. Tomando a faixa de maiores de 74 anos como base, observa-se que as taxas de incidência caem drasticamente nas faixas mais jovens. Pacientes entre 40-54 anos, por exemplo, apresentam uma taxa de incidência cerca de 88% menor (RR = 0,11) quando comparados aos idosos (\>74 anos). A incidência cresce progressivamente conforme a idade avança.
+
+Efeito da Localidade (Cidades): Tendo a cidade de Fredericia como referência (linha de base do modelo), notamos que a cidade de Horsens não apresenta diferença estatística significativa nas taxas (p \> 0,05). No entanto, as cidades de Kolding e Vejle apresentam as maiores taxas da doença, com incidências aproximadamente 49% e 48% maiores (RR = 1,49 e RR = 1,48, respectivamente) do que Fredericia, mantendo-se a faixa etária constante.
+
+Conclusão Geral: O modelo confirmou que o risco de câncer de pulmão nas cidades dinamarquesas analisadas aumenta severamente com o envelhecimento da população, e que existe uma concentração geográfica de maior risco (maiores taxas) nas cidades de Kolding e Vejle.
+
