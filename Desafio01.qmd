@@ -7,39 +7,25 @@ author:
   - Paulo Emílio Vaz
 date: "2026-05-11"
 format:
-  pdf:
-    documentclass: article
-    papersize: letter
-    colorlinks: true
-    toc: true
-    number-sections: true
-  html:
+   html:
     theme: cosmo
     toc: true
     number-sections: true
-    code-fold: true
+    
+execute:
+  warning: false
+  message: false
 ---
 
-# Exercício 1
+# Exercício
 
-## Regressão Linear Múltipla - Eficiência Operacional (ANEEL)
+***Regressão Linear Múltipla - Eficiência Operacional (ANEEL)***
+
+**1.1 Carga e Preparação dos Dados**
 
 ##Nesta etapa, o nosso objetivo é avaliar se os Custos Operacionais (PMSO) das 52 distribuidoras de energia podem ser explicados pelas suas características operacionais (tamanho da rede, mercado, perdas, etc.).
 
 ##Buscamos o melhor modelo de Regressão Linear Múltipla, equilibrando a capacidade preditiva e a simplicidade interpretativa. Para isso, as variáveis de identificação das empresas (DMU e Código) serão desconsideradas da modelagem.
-
-### 1.1 Carga e Preparação dos Dados
-
-```{r}
-## Exercício 1: Regressão Linear Múltipla - Eficiência Operacional (ANEEL)
-
-##Nesta etapa, o nosso objetivo é avaliar se os Custos Operacionais (PMSO) das 52 distribuidoras de energia podem ser explicados pelas suas características operacionais (tamanho da rede, mercado, perdas, etc.). 
-
-##Buscamos o melhor modelo de Regressão Linear Múltipla, equilibrando a capacidade preditiva e a simplicidade interpretativa. Para isso, as variáveis de identificação das empresas (DMU e Código) serão desconsideradas da modelagem.
-
-### 1.1 Carga e Preparação dos Dados
-
-```
 
 ```{r}
 #| message: false
@@ -102,8 +88,10 @@ O `modelo_reduzido` final atende aos objetivos do desafio:
 2.  **Capacidade Preditiva:** O modelo reteve um $R^2$ Ajustado de 0.977, demonstrando que 97,7% da variação nos custos (PMSO) é perfeitamente explicada por este conjunto reduzido de variáveis operacionais.
 
 ```{r}
-#| message: false
 #| warning: false
+#| message: false
+#| fig-width: 7
+#| fig-height: 5
 #| fig-align: "center"
 
 # Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente
@@ -122,7 +110,9 @@ A partir do modelo reduzido selecionado, concluímos que é perfeitamente viáve
 
 Por outro lado, variáveis como "Rede Subterrânea" e "CHI" provaram ser irrelevantes para a formação do custo operacional neste conjunto de dados estatísticos. Esta descoberta é de alto valor para a ANEEL, pois permite à agência focar seus esforços de regulação, auditoria e previsão estritamente nas métricas que possuem impacto financeiro matematicamente comprovado.
 
-# Exercício 2
+# Exercício
+
+**Modelo de Poisson (com offset)**
 
 **2.1 Carga, Preparação e Análise Descritiva dos Dados:**
 
@@ -155,10 +145,13 @@ danishlc$Taxa <- (danishlc$Cases / danishlc$Pop) * 1000
 summary(danishlc)
 ```
 
-```{r}
-#| message: false
+```{r pltoagem}
 #| warning: false
+#| message: false
+#| fig-width: 7
+#| fig-height: 4
 #| fig-align: "center"
+#| echo: false
 
 library(ggplot2)
 
@@ -174,8 +167,7 @@ ggplot(danishlc, aes(x = Age, y = Taxa, fill = City)) +
   scale_fill_brewer(palette = "Set2")
 ```
 
-**2.2 Análise Descritiva:**
-A análise exploratória inicial da base de dados revela o comportamento da taxa de incidência de câncer de pulmão nas quatro cidades dinamarquesas observadas (Fredericia, Horsens, Kolding e Vejle). Através da estatística descritiva e da visualização gráfica, fica evidente que a taxa de incidência (casos por 1.000 habitantes) é assimetricamente maior na faixa etária mais avançada (maiores de 74 anos), mantendo esse padrão de alta independentemente da cidade analisada. Visualmente, as cidades de Kolding e Vejle já demonstram barras mais elevadas nas idades mais críticas.
+**2.2 Análise Descritiva:** A análise exploratória inicial da base de dados revela o comportamento da taxa de incidência de câncer de pulmão nas quatro cidades dinamarquesas observadas (Fredericia, Horsens, Kolding e Vejle). Através da estatística descritiva e da visualização gráfica, fica evidente que a taxa de incidência (casos por 1.000 habitantes) é assimetricamente maior na faixa etária mais avançada (maiores de 74 anos), mantendo esse padrão de alta independentemente da cidade analisada. Visualmente, as cidades de Kolding e Vejle já demonstram barras mais elevadas nas idades mais críticas.
 
 ```{r}
 #| message: false
@@ -235,8 +227,10 @@ Para modelar as contagens de casos da doença, aplicamos a Regressão de Poisson
 O modelo demonstrou um excelente ajuste aos dados empíricos. Ao calcular a *Deviance Residual* (14,484 para 12 graus de liberdade) e submetê-la ao teste de Qualidade de Ajuste (Qui-Quadrado), obtivemos um p-valor amplamente superior ao nível de significância de 0,05. Esse resultado nos leva a não rejeitar a hipótese nula de bom ajuste do modelo, o que atesta a ausência de superdispersão e confirma que a distribuição de Poisson foi a escolha metodológica correta.
 
 ```{r}
-#| message: false
 #| warning: false
+#| message: false
+#| fig-width: 7
+#| fig-height: 5
 #| fig-align: "center"
 
 # Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente

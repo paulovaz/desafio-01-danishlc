@@ -117,16 +117,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#exercício-1" id="toc-exercício-1" class="nav-link active" data-scroll-target="#exercício-1"><span class="header-section-number">1</span> Exercício 1</a>
-  <ul class="collapse">
-  <li><a href="#regressão-linear-múltipla---eficiência-operacional-aneel" id="toc-regressão-linear-múltipla---eficiência-operacional-aneel" class="nav-link" data-scroll-target="#regressão-linear-múltipla---eficiência-operacional-aneel"><span class="header-section-number">1.1</span> Regressão Linear Múltipla - Eficiência Operacional (ANEEL)</a>
-  <ul class="collapse">
-  <li><a href="#carga-e-preparação-dos-dados" id="toc-carga-e-preparação-dos-dados" class="nav-link" data-scroll-target="#carga-e-preparação-dos-dados"><span class="header-section-number">1.1.1</span> 1.1 Carga e Preparação dos Dados</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#exercício-2" id="toc-exercício-2" class="nav-link" data-scroll-target="#exercício-2"><span class="header-section-number">2</span> Exercício 2</a></li>
+  <li><a href="#exercício" id="toc-exercício" class="nav-link active" data-scroll-target="#exercício"><span class="header-section-number">1</span> Exercício</a></li>
+  <li><a href="#exercício-1" id="toc-exercício-1" class="nav-link" data-scroll-target="#exercício-1"><span class="header-section-number">2</span> Exercício</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Desafio01.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -164,38 +158,21 @@ window.Quarto = {
 </header>
 
 
-<section id="exercício-1" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Exercício 1</h1>
-<section id="regressão-linear-múltipla---eficiência-operacional-aneel" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="regressão-linear-múltipla---eficiência-operacional-aneel"><span class="header-section-number">1.1</span> Regressão Linear Múltipla - Eficiência Operacional (ANEEL)</h2>
+<section id="exercício" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Exercício</h1>
+<p><strong><em>Regressão Linear Múltipla - Eficiência Operacional (ANEEL)</em></strong></p>
+<p><strong>1.1 Carga e Preparação dos Dados</strong></p>
 <p>##Nesta etapa, o nosso objetivo é avaliar se os Custos Operacionais (PMSO) das 52 distribuidoras de energia podem ser explicados pelas suas características operacionais (tamanho da rede, mercado, perdas, etc.).</p>
 <p>##Buscamos o melhor modelo de Regressão Linear Múltipla, equilibrando a capacidade preditiva e a simplicidade interpretativa. Para isso, as variáveis de identificação das empresas (DMU e Código) serão desconsideradas da modelagem.</p>
-<section id="carga-e-preparação-dos-dados" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="carga-e-preparação-dos-dados"><span class="header-section-number">1.1.1</span> 1.1 Carga e Preparação dos Dados</h3>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Exercício 1: Regressão Linear Múltipla - Eficiência Operacional (ANEEL)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">##Nesta etapa, o nosso objetivo é avaliar se os Custos Operacionais (PMSO) das 52 distribuidoras de energia podem ser explicados pelas suas características operacionais (tamanho da rede, mercado, perdas, etc.). </span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">##Buscamos o melhor modelo de Regressão Linear Múltipla, equilibrando a capacidade preditiva e a simplicidade interpretativa. Para isso, as variáveis de identificação das empresas (DMU e Código) serão desconsideradas da modelagem.</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregando o pacote para leitura de planilhas</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lendo a base de dados</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dados_aneel <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"ModeloVigente_DadosCP62_2023.xlsx"</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">### 1.1 Carga e Preparação dos Dados</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregando o pacote para leitura de planilhas</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Lendo a base de dados</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dados_aneel <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"ModeloVigente_DadosCP62_2023.xlsx"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando a estrutura inicial dos dados</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dados_aneel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando a estrutura inicial dos dados</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dados_aneel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 10
   DMU         Codigo   PMSO `rede alta` `rede subterranea` `rede aerea` mercadoP
@@ -211,14 +188,11 @@ window.Quarto = {
 </div>
 <p><strong>1.2. Ajuste do Modelo Completo (Regressão Linear Múltipla):</strong> Nós iniciamos aplicando a Regressão Linear Múltipla clássica inserindo todas as variáveis explicativas disponíveis (excluindo apenas os identificadores textuais, como já discutimos). O objetivo foi criar uma “linha de base” para entender como todas as forças atuavam juntas sobre o Custo Operacional (PMSO).</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo completo (Prevendo PMSO e ignorando DMU e Codigo)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>modelo_completo <span class="ot">&lt;-</span> <span class="fu">lm</span>(PMSO <span class="sc">~</span> . <span class="sc">-</span> DMU <span class="sc">-</span> Codigo, <span class="at">data =</span> dados_aneel)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando os resultados do modelo completo</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_completo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo completo (Prevendo PMSO e ignorando DMU e Codigo)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>modelo_completo <span class="ot">&lt;-</span> <span class="fu">lm</span>(PMSO <span class="sc">~</span> . <span class="sc">-</span> DMU <span class="sc">-</span> Codigo, <span class="at">data =</span> dados_aneel)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando os resultados do modelo completo</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_completo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -250,15 +224,12 @@ F-statistic: 304.9 on 7 and 44 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>No sumário acima, é possível identificar que as outras variáveis passam no teste de significância, sendo que a PNT e a Rede Aérea são as que apresentam o maior grau de significância estatística (p &lt; 0,001, indicados pelos códigos visuais <code>***</code>).</p>
 <p>No bloco seguinte, removemos manualmente as variáveis não significativas e validamos essa escolha através do teste de diferença de Deviance (ANOVA), conforme a metodologia apresentada na Aula 03 (Slide 3).</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo reduzido (removendo 'rede subterranea' e 'CHI')</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>modelo_reduzido <span class="ot">&lt;-</span> <span class="fu">lm</span>(PMSO <span class="sc">~</span> <span class="st">`</span><span class="at">rede alta</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">rede aerea</span><span class="st">`</span> <span class="sc">+</span> mercadoP <span class="sc">+</span> cons <span class="sc">+</span> PNT, </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> dados_aneel)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Resumo do modelo reduzido</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_reduzido)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo reduzido (removendo 'rede subterranea' e 'CHI')</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>modelo_reduzido <span class="ot">&lt;-</span> <span class="fu">lm</span>(PMSO <span class="sc">~</span> <span class="st">`</span><span class="at">rede alta</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">rede aerea</span><span class="st">`</span> <span class="sc">+</span> mercadoP <span class="sc">+</span> cons <span class="sc">+</span> PNT, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> dados_aneel)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Resumo do modelo reduzido</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_reduzido)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -284,11 +255,8 @@ Residual standard error: 81380 on 46 degrees of freedom
 Multiple R-squared:  0.9793,    Adjusted R-squared:  0.977 
 F-statistic: 434.3 on 5 and 46 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparação de Desvios (Deviance / ANOVA)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(modelo_reduzido, modelo_completo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparação de Desvios (Deviance / ANOVA)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(modelo_reduzido, modelo_completo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -309,63 +277,53 @@ Model 2: PMSO ~ (DMU + Codigo + `rede alta` + `rede subterranea` + `rede aerea` 
 <li><p><strong>Capacidade Preditiva:</strong> O modelo reteve um <span class="math inline">\(R^2\)</span> Ajustado de 0.977, demonstrando que 97,7% da variação nos custos (PMSO) é perfeitamente explicada por este conjunto reduzido de variáveis operacionais.</p></li>
 </ol>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando os gráficos de diagnóstico para o modelo escolhido</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_reduzido)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando os gráficos de diagnóstico para o modelo escolhido</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_reduzido)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Desafio01_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="Desafio01_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retornando a área de plotagem ao padrão original</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retornando a área de plotagem ao padrão original</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>1.5 Principais Conclusões (Exercício 1):</strong></p>
 <p>A partir do modelo reduzido selecionado, concluímos que é perfeitamente viável para a ANEEL estimar os Custos Operacionais (PMSO) utilizando os dados técnicos e de mercado das concessionárias. O modelo revelou que 97,7% da variação desses custos é explicada por apenas cinco variáveis-chave: Rede de alta tensão, Rede aérea, Mercado ponderado, Consumidores e Perdas Não Técnicas (PNT).</p>
 <p>Por outro lado, variáveis como “Rede Subterrânea” e “CHI” provaram ser irrelevantes para a formação do custo operacional neste conjunto de dados estatísticos. Esta descoberta é de alto valor para a ANEEL, pois permite à agência focar seus esforços de regulação, auditoria e previsão estritamente nas métricas que possuem impacto financeiro matematicamente comprovado.</p>
 </section>
-</section>
-</section>
-<section id="exercício-2" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Exercício 2</h1>
+<section id="exercício-1" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Exercício</h1>
+<p><strong>Modelo de Poisson (com offset)</strong></p>
 <p><strong>2.1 Carga, Preparação e Análise Descritiva dos Dados:</strong></p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criando o data frame com os dados do desafio</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>danishlc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">City =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Fredericia"</span>, <span class="st">"Horsens"</span>, <span class="st">"Kolding"</span>, <span class="st">"Vejle"</span>), <span class="at">each =</span> <span class="dv">5</span>),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"40-54"</span>, <span class="st">"55-59"</span>, <span class="st">"60-64"</span>, <span class="st">"65-74"</span>, <span class="st">"&gt;74"</span>), <span class="at">times =</span> <span class="dv">4</span>),</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Pop =</span> <span class="fu">c</span>(<span class="dv">3059</span>, <span class="dv">800</span>, <span class="dv">710</span>, <span class="dv">581</span>, <span class="dv">509</span>,  </span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>          <span class="dv">3083</span>, <span class="dv">712</span>, <span class="dv">625</span>, <span class="dv">402</span>, <span class="dv">290</span>,  </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>          <span class="dv">2867</span>, <span class="dv">597</span>, <span class="dv">526</span>, <span class="dv">350</span>, <span class="dv">223</span>,  </span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>          <span class="dv">2914</span>, <span class="dv">539</span>, <span class="dv">461</span>, <span class="dv">307</span>, <span class="dv">189</span>),</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cases =</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">10</span>, <span class="dv">11</span>,  </span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>            <span class="dv">15</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">4</span>,  </span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>            <span class="dv">11</span>, <span class="dv">13</span>, <span class="dv">9</span>, <span class="dv">11</span>, <span class="dv">10</span>,  </span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            <span class="dv">10</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">14</span>)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertendo as variáveis explicativas para fatores</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>City <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(danishlc<span class="sc">$</span>City)</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>Age <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(danishlc<span class="sc">$</span>Age)</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculando a Taxa Bruta de Incidência (por 1.000 habitantes)</span></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>Taxa <span class="ot">&lt;-</span> (danishlc<span class="sc">$</span>Cases <span class="sc">/</span> danishlc<span class="sc">$</span>Pop) <span class="sc">*</span> <span class="dv">1000</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando o sumário descritivo dos dados</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(danishlc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criando o data frame com os dados do desafio</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>danishlc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">City =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Fredericia"</span>, <span class="st">"Horsens"</span>, <span class="st">"Kolding"</span>, <span class="st">"Vejle"</span>), <span class="at">each =</span> <span class="dv">5</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"40-54"</span>, <span class="st">"55-59"</span>, <span class="st">"60-64"</span>, <span class="st">"65-74"</span>, <span class="st">"&gt;74"</span>), <span class="at">times =</span> <span class="dv">4</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Pop =</span> <span class="fu">c</span>(<span class="dv">3059</span>, <span class="dv">800</span>, <span class="dv">710</span>, <span class="dv">581</span>, <span class="dv">509</span>,  </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>          <span class="dv">3083</span>, <span class="dv">712</span>, <span class="dv">625</span>, <span class="dv">402</span>, <span class="dv">290</span>,  </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>          <span class="dv">2867</span>, <span class="dv">597</span>, <span class="dv">526</span>, <span class="dv">350</span>, <span class="dv">223</span>,  </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>          <span class="dv">2914</span>, <span class="dv">539</span>, <span class="dv">461</span>, <span class="dv">307</span>, <span class="dv">189</span>),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cases =</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">10</span>, <span class="dv">11</span>,  </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>            <span class="dv">15</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">4</span>,  </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>            <span class="dv">11</span>, <span class="dv">13</span>, <span class="dv">9</span>, <span class="dv">11</span>, <span class="dv">10</span>,  </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            <span class="dv">10</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="dv">14</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertendo as variáveis explicativas para fatores</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>City <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(danishlc<span class="sc">$</span>City)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>Age <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(danishlc<span class="sc">$</span>Age)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculando a Taxa Bruta de Incidência (por 1.000 habitantes)</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>danishlc<span class="sc">$</span>Taxa <span class="ot">&lt;-</span> (danishlc<span class="sc">$</span>Cases <span class="sc">/</span> danishlc<span class="sc">$</span>Pop) <span class="sc">*</span> <span class="dv">1000</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando o sumário descritivo dos dados</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(danishlc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         City      Age         Pop             Cases            Taxa       
  Fredericia:5   &gt;74  :4   Min.   : 189.0   Min.   : 4.00   Min.   : 3.432  
@@ -377,44 +335,26 @@ Model 2: PMSO ~ (DMU + Codigo + `rede alta` + `rede subterranea` + `rede aerea` 
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(danishlc, <span class="fu">aes</span>(<span class="at">x =</span> Age, <span class="at">y =</span> Taxa, <span class="at">fill =</span> City)) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Taxa de Incidência de Câncer de Pulmão por 1.000 Habitantes"</span>,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Faixa Etária (Anos)"</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Casos por 1.000 Habitantes"</span>,</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Cidade"</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Desafio01_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="Desafio01_files/figure-html/pltoagem-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p><strong>2.2 Análise Descritiva:</strong> A análise exploratória inicial da base de dados revela o comportamento da taxa de incidência de câncer de pulmão nas quatro cidades dinamarquesas observadas (Fredericia, Horsens, Kolding e Vejle). Através da estatística descritiva e da visualização gráfica, fica evidente que a taxa de incidência (casos por 1.000 habitantes) é assimetricamente maior na faixa etária mais avançada (maiores de 74 anos), mantendo esse padrão de alta independentemente da cidade analisada. Visualmente, as cidades de Kolding e Vejle já demonstram barras mais elevadas nas idades mais críticas.</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo de Poisson com offset populacional</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>modelo_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  Cases <span class="sc">~</span> City <span class="sc">+</span> Age, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>), </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> <span class="fu">log</span>(Pop), </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> danishlc</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Exibindo os resultados detalhados do modelo</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_poisson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustando o modelo de Poisson com offset populacional</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>modelo_poisson <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  Cases <span class="sc">~</span> City <span class="sc">+</span> Age, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>), </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> <span class="fu">log</span>(Pop), </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> danishlc</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Exibindo os resultados detalhados do modelo</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_poisson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -476,26 +416,20 @@ cat("P-valor do Teste de Ajuste:", round(p_valor_ajuste, 4), "\n")</code></pre>
 <p>Para modelar as contagens de casos da doença, aplicamos a Regressão de Poisson com a função de ligação logarítmica. O passo fundamental neste ajuste foi a utilização do logaritmo da População (<code>offset = log(Pop)</code>). Na modelagem epidemiológica, o <em>offset</em> transforma a simples contagem bruta de casos em uma <strong>taxa de incidência</strong>, permitindo uma comparação justa entre cidades que possuem tamanhos populacionais diferentes.</p>
 <p>O modelo demonstrou um excelente ajuste aos dados empíricos. Ao calcular a <em>Deviance Residual</em> (14,484 para 12 graus de liberdade) e submetê-la ao teste de Qualidade de Ajuste (Qui-Quadrado), obtivemos um p-valor amplamente superior ao nível de significância de 0,05. Esse resultado nos leva a não rejeitar a hipótese nula de bom ajuste do modelo, o que atesta a ausência de superdispersão e confirma que a distribuição de Poisson foi a escolha metodológica correta.</p>
 <div class="cell" data-layout-align="center">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando os gráficos de diagnóstico para o modelo de Poisson</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_poisson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividindo a área de plotagem para mostrar 4 gráficos simultaneamente</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotando os gráficos de diagnóstico para o modelo de Poisson</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_poisson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Desafio01_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="Desafio01_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retornando a área de plotagem ao padrão original</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retornando a área de plotagem ao padrão original</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>2.4 Análise dos Resíduos:</strong></p>
 <p>A análise gráfica dos resíduos deviance confirma a adequação do modelo. O gráfico Residuals vs Fitted não apresenta funilamento (homocedasticidade respeitada), o que é corroborado pelo teste formal de qualidade de ajuste (Qui-quadrado) realizado anteriormente, que descartou a presença de superdispersão. Além disso, a ausência de pontos que extrapolem a Distância de Cook no gráfico Residuals vs Leverage indica que não há outliers influentes distorcendo as estimativas das taxas de incidência nas cidades.</p>
