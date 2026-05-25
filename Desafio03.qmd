@@ -1,0 +1,212 @@
+---
+title: "3º Desafio em Elementos de Aprendizado de Máquina"
+subtitle: "Exercício 1 - Regressão Multinomial – Wine Datase e Exercício 2 - Modelagem da Capacidade Respiratória"
+author:
+  - Lorrayne Silva
+  - Kamylla Dianne Fonseca Landim
+  - Paulo Emílio Vaz
+date: "2026-05-31"
+output:
+  pdf: default
+  theme: cosmo
+  toc: false
+  number-sections: false
+    
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Exercício 1 – Regressão Multinomial – Wine Dataset
+
+O objetivo deste exercício foi ajustar um modelo de regressão multinomial para estimar a região de origem dos vinhos a partir das características sensoriais disponíveis na base de dados.
+
+## Análise exploratória dos dados
+
+A base de dados apresentou 38 observações e 7 variáveis, sendo cinco variáveis sensoriais quantitativas relacionadas às características dos vinhos, uma variável resposta multinomial (`Region.y`) e uma variável adicional de qualidade (`Quality`).
+
+```{r, include=FALSE}
+library(openxlsx)
+library(dplyr)
+library(caret)
+library(nnet)
+
+base <- read.xlsx("wine.xlsx")
+
+str(base)
+summary(base)
+```
+
+As variáveis explicativas apresentaram valores contínuos em escalas relativamente próximas, com médias concentradas entre aproximadamente 4 e 5 pontos para Aroma, Corpo, Sabor e Carvalho.  
+A variável `Clarity` apresentou menor variabilidade, concentrando-se majoritariamente próxima ao valor 1.  
+A variável resposta `Region.y` apresentou três categorias distintas, caracterizando um problema de classificação multinomial adequado para aplicação da regressão logística multinomial.  
+Não foram observados valores ausentes ou inconsistências relevantes na base de dados.
+
+## Ajuste do modelo multinomial
+
+A variável resposta foi convertida para fator para ajuste do modelo multinomial.
+```{r, include=FALSE}
+base$Region.y <- as.factor(base$Region.y)
+```
+Foi realizada a separação entre base de treinamento e teste.
+```{r, include=FALSE}
+set.seed(123)
+
+indice <- createDataPartition(base$Region.y,
+                              p = 0.7,
+                              list = FALSE)
+
+train <- base[indice, ]
+test  <- base[-indice, ]
+```
+O modelo de regressão multinomial foi ajustado utilizando as variáveis sensoriais como preditoras da região de origem do vinho.
+
+```{r}
+modelo <- multinom(Region.y ~ Clarity +
+                                Aroma +
+                                Body +
+                                Flavor +
+                                Oakiness,
+                   data = train)
+```
+
+```{r, results='hide'}
+summary(modelo)
+```
+O modelo multinomial foi ajustado por método iterativo de máxima verossimilhança e permitiu estimar as probabilidades associadas às diferentes regiões de origem dos vinhos a partir de suas características sensoriais.  
+Observou-se redução progressiva da função de erro ao longo das iterações, indicando melhora do ajuste do modelo durante o processo de estimação.  
+O algoritmo convergiu após 100 iterações, sugerindo estabilidade no ajuste realizado para a classificação das regiões de origem dos vinhos.
+
+## Avaliação do modelo
+
+Foram calculadas as previsões para a base de teste.
+```{r}
+pred <- predict(modelo,
+                newdata = test)
+
+pred <- factor(pred,
+               levels = levels(test$Region.y))
+
+real <- factor(test$Region.y,
+               levels = levels(test$Region.y))
+```
+
+## Matriz de confusão e acurácia do modelo
+```{r}
+confusionMatrix(pred, real)
+```
+
+```{r}
+mean(pred == real)
+```
+A matriz de confusão indicou acurácia de aproximadamente 50%, evidenciando capacidade moderada do modelo em classificar corretamente as regiões de origem dos vinhos.    
+Os resultados mostraram desempenho heterogêneo entre as classes. A classe 3 apresentou elevada sensibilidade (100%), indicando excelente capacidade de identificação dessa categoria específica.  
+Por outro lado, a classe 2 apresentou baixa capacidade de classificação, com sensibilidade igual a zero, sugerindo dificuldade do modelo em distinguir corretamente essa região em relação às demais.    
+O coeficiente Kappa igual a 0,206 indicou baixo nível de concordância entre as classificações previstas e os valores reais.    
+Esse comportamento pode estar associado ao reduzido tamanho da amostra e à possível sobreposição das características sensoriais entre algumas regiões produtoras.
+
+## Considerações finais
+
+O modelo de regressão multinomial apresentou desempenho moderado na classificação das regiões de origem dos vinhos a partir de suas características sensoriais.  
+A acurácia obtida e os resultados da matriz de confusão indicaram dificuldade do modelo em discriminar adequadamente algumas categorias, possivelmente em função do reduzido tamanho da amostra e da semelhança sensorial entre determinadas regiões produtoras.  
+De forma geral, o modelo mostrou-se parcialmente adequado para representar a relação entre as características dos vinhos e sua região de origem.
+
+
+## Exercício 2 – Modelagem da Capacidade Respiratória
+
+O objetivo deste exercício foi analisar a relação entre o índice de capacidade respiratória `FEV(y)` e as variáveis preditoras disponíveis na base de dados, buscando ajustar o modelo mais apropriado para previsão da variável resposta.
+
+## Análise exploratória dos dados
+
+A base de dados apresentou 654 observações e 5 variáveis relacionadas à capacidade respiratória dos indivíduos:  
+- FEV(y): índice de capacidade respiratória;  
+- Age: idade;  
+- Ht: altura;  
+- Gender: gênero;  
+- Smoke: hábito de fumar.  
+
+```{r, include=FALSE}
+library(openxlsx)
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(MASS)
+
+base <- read.xlsx("respiratory.xlsx")
+
+str(base)
+summary(base)
+```
+
+As variáveis `Age` e `Ht` apresentaram natureza quantitativa contínua, enquanto `Gender` e `Smoke` representam variáveis binárias indicadoras de gênero e hábito de fumar.  
+A variável resposta `FEV.y` apresentou valores contínuos positivos, variando aproximadamente entre 0,79 e 5,79, característica compatível com modelos de regressão para respostas contínuas positivas.  
+Observou-se ampla variabilidade nas variáveis idade, altura e capacidade respiratória, indicando potencial associação entre o desenvolvimento físico dos indivíduos e o índice respiratório.  
+A variável `Smoke` apresentou predominância de indivíduos não fumantes, uma vez que a média observada foi próxima de 0,10.  
+Não foram observadas inconsistências relevantes ou presença significativa de valores ausentes na base de dados.
+
+## Análise de correlação
+
+Foi realizada análise gráfica da relação entre `FEV(y)` e as variáveis quantitativas.
+```{r}
+ggplot(base,
+       aes(x = Age,
+           y = FEV.y)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+ggplot(base,
+       aes(x = Ht,
+           y = FEV.y)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+A análise gráfica indicou associação positiva entre a capacidade respiratória (`FEV.y`) e as variáveis idade (`Age`) e altura (`Ht`).  
+Observou-se tendência crescente aproximadamente linear, sugerindo aumento da capacidade respiratória conforme o desenvolvimento físico dos indivíduos.  
+A relação entre `FEV.y` e `Ht` mostrou-se visualmente mais forte e consistente, com menor dispersão relativa em torno da linha de tendência quando comparada à variável idade.  
+Os gráficos também evidenciaram aumento gradual da variabilidade da capacidade respiratória para valores mais elevados de idade e altura.
+
+## Ajuste do modelo
+
+As variáveis categóricas foram convertidas para fator.
+```{r, include=FALSE}
+base$Gender <- as.factor(base$Gender)
+base$Smoke <- as.factor(base$Smoke)
+```
+Foi ajustado inicialmente um modelo linear generalizado para prever a capacidade respiratória média dos indivíduos.
+```{r}
+modelo <- glm(FEV.y ~ Age +
+                         Ht +
+                         Gender +
+                         Smoke,
+              data = base,
+              family = Gamma(link = "log"))
+```
+
+```{r, results='hide'}
+summary(modelo)
+```
+O modelo Gamma com função de ligação log apresentou ajuste satisfatório para modelagem da capacidade respiratória dos indivíduos.  
+Observou-se redução expressiva entre o Null Deviance (70,791) e o Residual Deviance (13,414), indicando melhora significativa do ajuste após inclusão das variáveis explicativas.
+As variáveis `Age` e `Ht` apresentaram associação positiva estatisticamente significativa com a capacidade respiratória (`FEV.y`), sugerindo aumento da função respiratória conforme o desenvolvimento físico dos indivíduos.  
+A variável `Gender` também apresentou efeito significativo, indicando diferenças médias de capacidade respiratória entre os grupos avaliados.  
+Já a variável `Smoke` apresentou associação negativa com `FEV.y`, sugerindo redução média da capacidade respiratória entre indivíduos fumantes.  
+
+## Avaliação do modelo
+
+```{r, results='hide'}
+AIC(modelo)
+```
+O valor do AIC obtido foi igual a 525,61, indicando ajuste adequado do modelo considerando o equilíbrio entre qualidade de ajuste e complexidade da modelagem.
+
+## Considerações finais
+
+O modelo Gamma com função de ligação log apresentou desempenho satisfatório para modelagem da capacidade respiratória dos indivíduos.  
+A análise exploratória indicou associação positiva entre a variável resposta `FEV.y` e as variáveis idade (`Age`) e altura (`Ht`), resultado posteriormente confirmado pelo modelo ajustado.  
+Todas as variáveis incluídas no modelo apresentaram associação estatisticamente significativa com a capacidade respiratória média dos indivíduos.  
+Observou-se associação negativa entre o hábito de fumar e a capacidade respiratória, enquanto idade e altura apresentaram relação positiva com `FEV.y`.  
+A redução expressiva entre o Null Deviance e o Residual Deviance indicou melhora substancial do ajuste após inclusão das variáveis explicativas.  
+De forma geral, o modelo Gamma mostrou-se apropriado para representar a relação entre as variáveis preditoras e a capacidade respiratória, considerando a natureza contínua e positiva da variável resposta.
