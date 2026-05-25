@@ -1,0 +1,260 @@
+---
+title: "2º Desafio em Elementos de Aprendizado de Máquina"
+subtitle: "Exercício 1 - Porto Seguro e Exercício 2 - Classificação de sinais da ionosfera "
+author:
+  - Lorrayne Silva
+  - Kamylla Dianne Fonseca Landim
+  - Paulo Emílio Vaz
+date: "2026-05-24"
+output:
+  pdf: default
+  theme: cosmo
+  toc: false
+  number-sections: false
+    
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Exercício 1 – Regressão Logística – Porto Seguro
+
+O objetivo do exercício é ajustar um modelo de regressão logística para estimar a probabilidade de ocorrência do evento Y = 1 a partir das variáveis disponíveis na base de dados Porto Seguro.
+
+## Análise de consistência dos dados
+
+A base possui: 68 variáveis explicativas, 1 variável resposta binária e 1 variável identificadora.  
+Foi realizada uma análise exploratória para verificar: valores ausentes, estrutura das variáveis, consistência dos dados e distribuição da variável resposta.
+```{r, include=FALSE}
+library(openxlsx)
+library(dplyr)
+library(caret)
+library(pROC)
+
+base <- read.xlsx("PortoSeguro.xlsx")
+
+str(base)
+summary(base)
+
+missing <- sapply(base, function(x) mean(is.na(x)))
+missing <- sort(missing, decreasing = TRUE)
+
+missing
+
+base$id <- NULL
+```
+Observou-se presença de valores ausentes em algumas variáveis, principalmente nas variáveis var65 e var66, indicando baixa qualidade informacional dessas colunas.  
+A variável resposta apresentou desbalanceamento moderado entre as classes Y = 0 e Y = 1, comportamento comum em problemas de classificação de clientes.
+
+## Ajuste do modelo de regressão logística
+
+Para o ajuste do modelo, foram removidas variáveis com excesso de valores ausentes e realizada imputação simples pela mediana para variáveis numéricas.  
+
+```{r}
+# Remoção de variáveis com excesso de valores ausente
+base <- base %>%
+  select(-var65, -var66)
+
+# Imputação simples
+for(i in 1:ncol(base)){
+  
+  if(is.numeric(base[[i]])){
+    
+    base[[i]][is.na(base[[i]])] <- median(base[[i]], na.rm = TRUE)
+  }
+}
+
+# Separação treino e teste
+set.seed(123)
+
+indice <- createDataPartition(base$y,
+                              p = 0.7,
+                              list = FALSE)
+
+train <- base[indice, ]
+test  <- base[-indice, ]
+
+modelo <- glm(y ~ .,
+              data = train,
+              family = binomial(link = "logit"))
+```
+```{r, results='hide'}
+summary(modelo)
+```
+O modelo de regressão logística foi ajustado utilizando a função glm() com família binomial e ligação logit. A análise dos coeficientes indicou que parte das variáveis explicativas apresentou associação estatisticamente relevante com a probabilidade de ocorrência do evento Y = 1.  
+O modelo foi posteriormente avaliado por matriz de confusão, curva ROC e AUC.  
+A redução observada entre o Null Deviance e o Residual Deviance indicou melhora significativa do ajuste após a inclusão das variáveis explicativas, sugerindo que parte relevante do comportamento da variável resposta foi capturada pelo modelo.
+
+## Avaliação do modelo
+
+As probabilidades previstas foram calculadas utilizando a base de teste. Em seguida, foi adotado o limiar de 0,5 para classificação dos clientes entre as classes Y = 0 e Y = 1.
+
+```{r}
+# Probabilidades previstas
+prob <- predict(modelo,
+                newdata = test,
+                type = "response")
+
+# Classificação
+pred <- ifelse(prob > 0.5, 1, 0)
+```
+
+## Matriz de confusão
+
+```{r}
+confusionMatrix(as.factor(pred),
+                as.factor(test$y),
+                positive = "1")
+```
+A matriz de confusão permitiu avaliar o desempenho do modelo em termos de acurácia, sensibilidade e especificidade.  
+Indicou acurácia de aproximadamente 82,9%, demonstrando bom desempenho geral do modelo.  
+A especificidade apresentou valor elevado (95,9%), indicando alta capacidade do modelo em identificar corretamente os clientes pertencentes à classe Y = 0.  
+Por outro lado, a sensibilidade foi relativamente baixa (29,2%), evidenciando dificuldade do modelo em identificar corretamente os clientes da classe positiva (Y = 1).  
+Esse comportamento pode ser explicado pelo desbalanceamento da variável resposta, uma vez que a maior parte das observações pertence à classe negativa.  
+A acurácia elevada deve ser interpretada com cautela, pois em problemas desbalanceados o modelo pode apresentar bom desempenho global mesmo com baixa capacidade de identificação da classe positiva.  
+O balanced accuracy de aproximadamente 62,6% reforça que o desempenho entre as classes não foi equilibrado.
+
+## Curva ROC
+
+```{r}
+roc_obj <- roc(test$y, prob)
+
+plot(roc_obj,
+     col = "blue",
+     main = "Curva ROC - Regressão Logística")
+```
+A curva ROC apresentou comportamento acima da linha diagonal de referência, indicando que o modelo possui capacidade preditiva superior ao acaso.  
+Observa-se que a curva apresenta crescimento relativamente consistente da sensibilidade à medida que ocorre redução da especificidade, demonstrando capacidade moderada de discriminação entre as classes Y = 0 e Y = 1.  
+Apesar do bom comportamento geral da curva ROC, os resultados da matriz de confusão mostraram maior desempenho na identificação da classe negativa em comparação à classe positiva.  
+Esse comportamento reforça o impacto do desbalanceamento da variável resposta sobre a sensibilidade do modelo.  
+De forma geral, a curva ROC confirmou que o modelo possui capacidade discriminatória razoável, embora ainda existam limitações na identificação da classe positiva.  
+
+## Área sob a curva (AUC)
+
+```{r}
+auc(roc_obj)
+```
+O valor da AUC foi igual a 0,7914, indicando boa capacidade discriminatória do modelo na distinção entre clientes pertencentes às classes Y = 0 e Y = 1.  
+Esse resultado demonstra que o modelo apresenta desempenho significativamente superior ao acaso, uma vez que a curva ROC permaneceu acima da diagonal de referência.  
+Apesar da boa capacidade geral de discriminação observada pela AUC, a análise da matriz de confusão mostrou baixa sensibilidade na identificação da classe positiva, indicando dificuldade do modelo em detectar corretamente todos os casos Y = 1.  
+
+## Considerações Finais
+
+O modelo de regressão logística apresentou desempenho satisfatório para o problema de classificação proposto.  
+A análise da curva ROC e da AUC indicou boa capacidade discriminatória do modelo, demonstrando desempenho superior ao acaso na distinção entre as classes Y = 0 e Y = 1.  
+Os resultados da matriz de confusão evidenciaram elevada especificidade, indicando boa capacidade do modelo em identificar corretamente clientes pertencentes à classe negativa.   Entretanto, a sensibilidade apresentou valor relativamente baixo, revelando limitação na identificação dos clientes da classe positiva.  
+Esse comportamento pode estar associado ao desbalanceamento presente na variável resposta, situação comum em problemas de classificação relacionados à previsão de comportamento de clientes.  
+De forma geral, o modelo ajustado mostrou-se adequado para representar a relação entre as variáveis explicativas e a probabilidade de ocorrência do evento Y = 1.  
+Como possíveis melhorias futuras, poderiam ser utilizadas técnicas de balanceamento de classes, seleção de variáveis, regularização e modelos de classificação mais robustos.
+
+
+## Exercício 2 – Classificação de sinais da ionosfera
+
+O objetivo deste exercício foi desenvolver um modelo de regressão logística para classificar sinais de radar da ionosfera em duas categorias:  
+“g” (good): recuperação correta do sinal;  
+“b” (bad): falha na recuperação do sinal.
+
+## Análise de consistência dos dados
+
+A base possui: 34 variáveis preditoras contínuas, 1 variável resposta binária e 351 observações.  
+As variáveis explicativas apresentaram valores contínuos concentrados majoritariamente no intervalo entre -1 e 1, característica esperada para sinais provenientes de sistemas de radar.  Segundo a documentação da base, não há presença de valores ausentes, o que simplifica o processo de modelagem.  
+A variável resposta apresentou duas categorias (“g” e “b”), caracterizando um problema de classificação binária adequado para aplicação da regressão logística.
+```{r, include=FALSE}
+library(openxlsx)
+library(dplyr)
+library(caret)
+library(pROC)
+
+base <- read.xlsx("ionosphere.xlsx")
+
+str(base)
+summary(base)
+```
+A variável resposta foi convertida para formato binário para ajuste do modelo logístico.
+
+## Ajuste do modelo de regressão logística
+
+Foi realizada a separação entre base de treinamento e teste e o modelo logístico foi ajustado utilizando função de ligação logit.
+
+```{r}
+base$y <- ifelse(base$y == "g", 1, 0)
+
+set.seed(123) 
+
+indice <- createDataPartition(base$y, p = 0.7, list = FALSE) 
+
+train <- base[indice, ] 
+test <- base[-indice, ]
+
+modelo <- glm(y ~ .,
+              data = train,
+              family = binomial(link = "logit"))
+```
+```{r, results='hide'}
+summary(modelo)
+```
+O modelo de regressão logística apresentou associação estatisticamente significativa para parte das variáveis explicativas, indicando relação com a probabilidade de recuperação correta do sinal.  
+Observou-se redução expressiva entre o Null Deviance (321,985) e o Residual Deviance (60,913), sugerindo melhora substancial do ajuste após inclusão das variáveis preditoras.  
+Diversas variáveis apresentaram significância estatística ao nível de 5%, evidenciando contribuição relevante para a capacidade discriminatória do modelo.  
+O valor do AIC igual a 128,91 indicou ajuste relativamente adequado considerando a complexidade do modelo.  
+Foi observada singularidade na variável x2, indicando ausência de variabilidade ou forte dependência linear com outras variáveis do conjunto de dados.
+
+## Avaliação do modelo
+
+As probabilidades previstas foram calculadas utilizando a base de teste. Em seguida, foi adotado o limiar de 0,5 para classificação das observações.
+
+```{r}
+# Probabilidades previstas
+prob <- predict(modelo,
+                newdata = test,
+                type = "response")
+
+# Classificação
+pred <- ifelse(prob > 0.5, 1, 0)
+```
+
+## Matriz de confusão
+
+```{r}
+confusionMatrix(as.factor(pred),
+                as.factor(test$y),
+                positive = "1")
+```
+A matriz de confusão indicou acurácia de aproximadamente 82,9%, demonstrando bom desempenho geral do modelo na classificação dos sinais da ionosfera.  
+A sensibilidade apresentou valor elevado (88,2%), indicando alta capacidade do modelo em identificar corretamente os sinais classificados como positivos (“good”).  
+A especificidade foi de aproximadamente 73,0%, indicando desempenho satisfatório na identificação dos sinais negativos (“bad”).  
+O balanced accuracy de 80,6% sugere desempenho relativamente equilibrado entre as duas classes, evidenciando boa capacidade discriminatória do modelo.  
+Além disso, o coeficiente Kappa igual a 0,62 indicou concordância substancial entre as classificações previstas e os valores reais.
+
+## Curva ROC
+
+```{r}
+roc_obj <- roc(test$y, prob)
+
+plot(roc_obj,
+     col = "blue",
+     main = "Curva ROC - Regressão Logística")
+```
+
+A curva ROC apresentou comportamento bastante superior à linha diagonal de referência, indicando elevada capacidade discriminatória do modelo.  
+Observa-se crescimento rápido da sensibilidade com pequena perda de especificidade, demonstrando boa capacidade do modelo em distinguir sinais classificados como “good” e “bad”.  
+A proximidade da curva em relação ao canto superior esquerdo sugere desempenho elevado do modelo de regressão logística para o problema de classificação proposto.  
+Os resultados da curva ROC foram consistentes com os valores observados na matriz de confusão, especialmente em relação à elevada sensibilidade e ao balanced accuracy obtido.
+
+## Área sob a curva (AUC)
+
+```{r}
+auc(roc_obj)
+```
+
+O valor da AUC foi igual a 0,8625, indicando elevada capacidade discriminatória do modelo na classificação dos sinais da ionosfera.  
+Esse resultado demonstra que o modelo apresenta desempenho significativamente superior ao acaso, conseguindo distinguir de forma eficiente sinais classificados como “good” e “bad”.  
+A elevada AUC observada foi consistente com os resultados da matriz de confusão e da curva ROC, especialmente em relação à alta sensibilidade e ao balanced accuracy obtidos.
+
+## Considerações Finais
+O modelo de regressão logística apresentou desempenho bastante satisfatório para o problema de classificação dos sinais da ionosfera.  
+A análise da curva ROC e da AUC indicou elevada capacidade discriminatória do modelo, demonstrando desempenho significativamente superior ao acaso na distinção entre sinais classificados como “good” e “bad”.  
+Os resultados da matriz de confusão evidenciaram elevada sensibilidade, indicando boa capacidade do modelo em identificar corretamente sinais positivos. Além disso, a especificidade apresentou valor satisfatório, demonstrando desempenho equilibrado entre as duas classes.  
+O balanced accuracy e o coeficiente Kappa reforçaram a qualidade do ajuste obtido e a consistência das classificações realizadas pelo modelo.  
+De forma geral, o modelo ajustado mostrou-se adequado para representar a relação entre as variáveis explicativas e a ocorrência da recuperação correta do sinal.
